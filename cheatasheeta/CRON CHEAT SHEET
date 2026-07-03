@@ -1,84 +1,6 @@
 ===============================================================================
                        UBUNTU CRON CHEAT SHEET (TXT VERSION)
 ===============================================================================
-Ein kompakter Spickzettel fuer die Verwaltung von Cron-Jobs unter Ubuntu.
-Cron wird verwendet, um Aufgaben (Skripte/Befehle) automatisch im Hintergrund
-zu bestimmten Zeiten oder Intervallen auszufuehren.
-
--------------------------------------------------------------------------------
-1. DIE WICHTIGSTEN CRON-BEFEHLE
--------------------------------------------------------------------------------
-
-Befehl                         | Beschreibung
--------------------------------|-----------------------------------------------
-crontab -l                     | Listet alle aktiven Cron-Jobs des aktuellen 
-                               | Benutzer aus (List).
-crontab -e                     | Oeffnet die Cron-Tabelle zum Bearbeiten (Edit).
-                               | Tipp: Beim ersten Mal kannst du den Editor 
-                               | waehlen (z.B. Nano).
-crontab -r                     | Loescht die komplette Cron-Tabelle des 
-                               | aktuellen Benutzers (Remove)!
-sudo crontab -u <user> -e      | Bearbeitet die Cron-Tabelle eines anderen 
-                               | spezifischen Benutzers (erfordert root).
-sudo crontab -e                | Bearbeitet die Cron-Tabelle des root-Benutzers 
-                               | (fuer Systemaufgaben).
-
-
--------------------------------------------------------------------------------
-2. DER AUFBAU EINER CRON-ZEILE (SYNTAX)
--------------------------------------------------------------------------------
-
-Jeder Cron-Job besteht aus 6 Teilen: 5 Zeitangaben und dem auszufuehrenden Befehl.
-# 0 18 * * * bash /home/alex/backup/backup-n-cron.sh /home/alex/backup/
- * * * * * /pfad/zum/befehl_oder_skript.sh
- | | | | |
- | | | | +----- Wochentag (0 - 7) (0 und 7 sind Sonntag)
- | | | +------- Monat (1 - 12)
- | | +--------- Tag des Monats (1 - 31)
- | +----------- Stunde (0 - 23)
- +------------- Minute (0 - 59)
-
-
--------------------------------------------------------------------------------
-3. OPERATOREN & SONDERZEICHEN
--------------------------------------------------------------------------------
-
-Zeichen | Beschreibung                 | Beispiel
---------|------------------------------|----------------------------------------
-* | Jede/s/n (Wildcard)          | * * * * * (Jede Minute, jede Stunde...)
-,       | Liste von Werten             | 15,30,45 * * * * (In Minute 15, 30, 45)
--       | Bereich (Range)              | 0 9-17 * * * (Jede Stunde von 9 bis 17 Uhr)
-/       | Intervalle (Schritte)        | */5 * * * * (Alle 5 Minuten)
-
-# 0 18 * * * bash /home/alex/backup/backup-n-cron.sh /home/alex/backup/
--------------------------------------------------------------------------------
-4. PRAKTISCHE BEISPIELE
--------------------------------------------------------------------------------
-
-Eintrag                        | Bedeutung
--------------------------------|-----------------------------------------------
-0 4 * * * /backup.sh           | Taeglich um genau 04:00 Uhr morgens ausfuehren.
-0 0 * * 1 /script.sh           | Jeden Montag um genau 00:00 Uhr ausfuehren.
-*/15 9-17 * * 1-5 /check.sh    | Montag bis Freitag, zwischen 9 und 17 Uhr, 
-                               | alle 15 Minuten ausfuehren.
-0 12 1 * * /monatsbericht.sh   | An jedem 1. Tag des Monats um 12:00 Uhr mittags.
-
-
--------------------------------------------------------------------------------
-5. CRON-SHORTCUTS (MAKROS)
--------------------------------------------------------------------------------
-
-Anstelle der 5 Sterne kannst du auch diese praktischen Abkuerzungen nutzen:
-
-Shortcut   | Entspricht   | Beschreibung
------------|--------------|----------------------------------------------------
-@reboot    | (beim Start) | Fuehrt den Befehl einmalig direkt beim Systemstart aus.
-@hourly    | 0 * * * * | Einmal pro Stunde (immer zur Minute 0).
-@daily     | 0 0 * * * | Einmal taeglich (um 00:00 Uhr nachts).
-@weekly    | 0 0 * * 0    | Einmal pro Woche (Sonntag um 00:00 Uhr).
-@monthly   | 0 0 1 * * | Einmal im Monat (am 1. Tag um 00:00 Uhr).
-
-
 -------------------------------------------------------------------------------
 6. FEHLERBEHEBUNG & TIPPS
 -------------------------------------------------------------------------------
@@ -97,5 +19,61 @@ Shortcut   | Entspricht   | Beschreibung
 
 * Cron-Dienst neu starten (falls notwendig):
   sudo systemctl restart cron
+------------------------------------------------------------------------------
+1. DIE WICHTIGSTEN CRON-BEFEHLE
+-------------------------------------------------------------------------------
 
-===============================================================================
+Befehl                         | Beschreibung
+-------------------------------|-----------------------------------------------
+crontab -l                     | Listet alle aktiven Cron-Jobs des aktuellen 
+                               | Benutzer aus (List).
+crontab -e                     | Oeffnet die Cron-Tabelle zum Bearbeiten (Edit).
+                               | Tipp: Beim ersten Mal kannst du den Editor 
+                               | waehlen (z.B. Nano).
+crontab -r                     | Loescht die komplette Cron-Tabelle des 
+                               | aktuellen Benutzers (Remove)!
+sudo crontab -u <user> -e      | Bearbeitet die Cron-Tabelle eines anderen 
+                               | spezifischen Benutzers (erfordert root).
+sudo crontab -e                | Bearbeitet die Cron-Tabelle des root-Benutzers 
+                               | (fuer Systemaufgaben).
+
+-------------------------------------------------------------------------------
+2. DER AUFBAU EINER CRON-ZEILE (SYNTAX)
+-------------------------------------------------------------------------------
+
+proofed
+# 0 18 * * * bash /home/alex/backup/backup-n-cron.sh /home/alex/backup/
+# 0 18 * * * bash /home/alex/backup/backup-n-cron.sh /home/alex/backup/
+
+-------------------------------------------------------------------------------
+3. OPERATOREN & SONDERZEICHEN
+-------------------------------------------------------------------------------
+
+Zeichen | Beschreibung                 | Beispiel
+--------|------------------------------|----------------------------------------
+* | Jede/s/n (Wildcard)          | * * * * * (Jede Minute, jede Stunde...)
+,       | Liste von Werten             | 15,30,45 * * * * (In Minute 15, 30, 45)
+-       | Bereich (Range)              | 0 9-17 * * * (Jede Stunde von 9 bis 17 Uhr)
+/       | Intervalle (Schritte)        | */5 * * * * (Alle 5 Minuten)
+-------------------------------------------------------------------------------
+4. PRAKTISCHE BEISPIELE
+-------------------------------------------------------------------------------
+Eintrag                        | Bedeutung
+-------------------------------|-----------------------------------------------
+0 4 * * * /backup.sh           | Taeglich um genau 04:00 Uhr morgens ausfuehren.
+0 0 * * 1 /script.sh           | Jeden Montag um genau 00:00 Uhr ausfuehren.
+*/15 9-17 * * 1-5 /check.sh    | Montag bis Freitag, zwischen 9 und 17 Uhr, 
+                               | alle 15 Minuten ausfuehren.
+0 12 1 * * /monatsbericht.sh   | An jedem 1. Tag des Monats um 12:00 Uhr mittags.
+
+-------------------------------------------------------------------------------
+5. CRON-SHORTCUTS (MAKROS)
+-------------------------------------------------------------------------------
+Anstelle der 5 Sterne kannst du auch diese praktischen Abkuerzungen nutzen:
+Shortcut   | Entspricht   | Beschreibung
+-----------|--------------|----------------------------------------------------
+@reboot    | (beim Start) | Fuehrt den Befehl einmalig direkt beim Systemstart aus.
+@hourly    | 0 * * * * | Einmal pro Stunde (immer zur Minute 0).
+@daily     | 0 0 * * * | Einmal taeglich (um 00:00 Uhr nachts).
+@weekly    | 0 0 * * 0    | Einmal pro Woche (Sonntag um 00:00 Uhr).
+@monthly   | 0 0 1 * * | Einmal im Monat (am 1. Tag um 00:00 Uhr).

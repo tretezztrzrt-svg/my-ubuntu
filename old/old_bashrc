@@ -1,0 +1,116 @@
+# need proof and vergleich
+
+###############################################################################
+# HISTORY KONFIGURATION
+###############################################################################
+HISTCONTROL=ignoreboth     # Keine duplizierten Zeilen, keine Leerzeichen-Zeilen
+shopt -s histappend        # History anhängen statt überschreiben
+HISTSIZE=10000             # Anzahl der Kommandos im Speicher
+HISTFILESIZE=20000         # Anzahl der Kommandos in der Datei
+HISTTIMEFORMAT="%F %T "    # Zeitstempel bei 'history'
+shopt -s checkwinsize      # Fenstergröße nach jedem Command prüfen
+
+###############################################################################
+# PROMPT CONFIGURATION (Farbiger Prompt)
+###############################################################################
+debian_chroot=${debian_chroot:-}
+if [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# Terminal Farbfähigkeit prüfen
+color_prompt=yes
+if [ -x /usr/bin/tput ] && tput setaf 1 >/dev/null 2>&1; then
+    color_prompt=yes
+else
+    color_prompt=no
+fi
+
+if [ "$color_prompt" = yes ]; then
+    PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+else
+    PS1='\u@\h:\w\$ '
+fi
+
+# XTerm Titel setzen
+case "$TERM" in
+    xterm*|rxvt*|screen*)
+        PS1="\[\e]0;\u@\h: \w\a\]$PS1"
+        ;;
+esac
+
+###############################################################################
+# COLOR SUPPORT FOR LS/GREP/CAT ETC.
+###############################################################################
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+    alias d='ls --color=auto'
+fi
+
+# GCC Farben aktivieren
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+###############################################################################
+# STANDARD LINUX ALIAS (BASIS)
+###############################################################################
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias lt='ls --human-readable --sort=modification-time --inverse'
+alias lc='ls --human-readable --sort=size --reverse'
+
+# Alert für lange laufende Commands
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+###############################################################################
+# LADEN DER EXTERNEN FILES (.bash_aliases & .bash_functions)
+###############################################################################
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+if [ -f ~/.bash_functions ]; then
+    . ~/.bash_functions
+fi
+
+###############################################################################
+# PROGRAMMABLE COMPLETION FEATURES
+###############################################################################
+if ! shopt -oq posix; then
+    if [ -f /usr/share/bash-completion/bash_completion ]; then
+        . /usr/share/bash-completion/bash_completion
+    elif [ -f /etc/bash_completion ]; then
+        . /etc/bash_completion
+    fi
+fi
+
+# Fuzzy completion verbessern
+shopt -s cdspell           # Kleinere Tippfehler in CD korrigieren
+shopt -s direxpand         # Automatische Verzeichnisergänzung
+shopt -s dirspell          # Autocomplete für Verzeichnisse
+
+###############################################################################
+# PATH ERWEITERUNGEN (optional)
+###############################################################################
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+
+###############################################################################
+# EDITOR PREFERENCES
+###############################################################################
+export VISUAL=vim
+export EDITOR=nano
+export PAGER=less
+export LESS='-R -N -X -F'  # Rote/grüne Anzeige, Nummern, quit wenn passt, Mouse
+
+###############################################################################
+# UTF-8 LOCALE
+###############################################################################
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
