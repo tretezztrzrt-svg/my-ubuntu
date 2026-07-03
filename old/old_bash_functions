@@ -23,27 +23,6 @@ function back() {
     cd - > /dev/null && pwd
 }
 
-# Gehe zum Home-Verzeichnis mit Info
-function homedir() {
-    cd ~ && echo "🏠 Home Directory: $PWD"
-}
-
-# Navigiere zu häufig genutzten Pfaden mit Parameter
-function goto() {
-    case "$1" in
-        alex)  cd /home/alex/ ;;
-        vera)  cd /media/veracrypt1/ ;;
-        logs)  cd /var/log/ ;;
-        doc)   cd ~/Documents/ ;;
-        down)  cd ~/Downloads/ ;;
-        etc)   cd /etc/ ;;
-        tmp)   cd /tmp/ ;;
-        root)  cd /root/ ;;
-        dev)   cd ~/Development/ ;;
-        projects) cd ~/projects/ ;;
-        *) echo "❌ Unknown target '$1'. Valid options: alex, vera, logs, doc, down, etc, tmp, root, dev, projects" ;;
-    esac
-}
 
 # Tree-like directory navigation
 function treedir() {
@@ -73,16 +52,7 @@ function findfile() {
     find . -type f -iname "*$1*" 2>/dev/null | head -30
 }
 
-# Suche nach bestimmten Dateitypen
-function search_by_ext() {
-    if [ -z "$1" ]; then
-        echo "usage: search_by_ext <extension> (e.g., 'py', 'txt', 'sh')"
-        return 1
-    fi
-    find . -type f -name "*.$1" 2>/dev/null | wc -l
-    echo "---"
-    find . -type f -name "*.$1" 2>/dev/null | head -20
-}
+
 
 # Finde große Dateien (> 100MB)
 function findbig() {
@@ -90,15 +60,13 @@ function findbig() {
     find . -type f -size +100M -exec du -h {} \; | sort -hr | head -20
 }
 
-# Finde leere Dateien
-function findempty() {
-    find . -type f -empty
-}
+
 
 # Finde geänderte Dateien (letzte 7 Tage)
 function findchanged() {
     find . -type f -mtime -7 -exec ls -lt {} \;
 }
+
 
 # Suche in Inhalten aller Konfigurationsdateien
 function configsearch() {
@@ -109,14 +77,6 @@ function configsearch() {
     find /etc -type f \( -name "*.conf" -o -name "*.cfg" -o -name "*.ini" \) -exec grep -l "$1" {} \;
 }
 
-# Globale Suche mit weniger Spam
-function glsearch() {
-    if [ -z "$1" ]; then
-        echo "usage: glsearch <pattern>"
-        return 1
-    fi
-    grep -rIl --exclude-dir={.git,node_modules,target} "$1" "${2:-.}" 2>/dev/null | head -50
-}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # VERZEICHNISGRÖßE ANALYSE
@@ -140,129 +100,9 @@ function analyze_dirs() {
     du -xs "$1"/* 2>/dev/null | sort -nr | head -"$limit" | awk '{$2=$2; print}' | column -t
 }
 
-# Gesamtverbrauch eines Verzeichnisses
-function total_size() {
-    if [ -z "$1" ]; then
-        echo "Total size of current directory:"
-        du -sh .
-    else
-        echo "Size of '$1':"
-        du -sh "$1" 2>/dev/null
-    fi
-}
-
 # ─────────────────────────────────────────────────────────────────────────────
 # ARCHIVIERUNG & ENTPACKEN
 # ─────────────────────────────────────────────────────────────────────────────
-
-# Universal entpacken (unterstützt mehrere Formate)
-function unpack() {
-    if [ $# -eq 0 ]; then
-        echo "Usage: unpack <archive_file>"
-        echo "Supported formats: .tar.gz, .tgz, .tar.bz2, .tar.xz, .zip, .rar, .7z"
-        return 1
-    fi
-    
-    local file="$1"
-    
-    if [ ! -f "$file" ]; then
-        echo "❌ Error: File '$file' not found"
-        return 1
-    fi
-    
-    case "$file" in
-        *.tar.gz|*.tgz)
-            echo "📦 Extracting .tar.gz ..."
-            tar -xzvf "$file"
-            ;;
-        *.tar.bz2|*.tbz2)
-            echo "📦 Extracting .tar.bz2 ..."
-            tar -xjvf "$file"
-            ;;
-        *.tar.xz|*.txz)
-            echo "📦 Extracting .tar.xz ..."
-            tar -xJvf "$file"
-            ;;
-        *.tar)
-            echo "📦 Extracting .tar ..."
-            tar -xf "$file"
-            ;;
-        *.zip)
-            echo "📦 Extracting .zip ..."
-            unzip -q "$file"
-            ;;
-        *.rar)
-            if command -v unrar &> /dev/null; then
-                echo "📦 Extracting .rar ..."
-                unrar x "$file"
-            else
-                echo "❌ unrar not installed. Run: sudo apt install unrar"
-                return 1
-            fi
-            ;;
-        *.7z)
-            if command -v 7z &> /dev/null; then
-                echo "📦 Extracting .7z ..."
-                7z x -y "$file"
-            else
-                echo "❌ 7z not installed. Run: sudo apt install p7zip-full"
-                return 1
-            fi
-            ;;
-        *)
-            echo "❌ Unknown archive format: $file"
-            echo "Try installing extra tools for better support."
-            return 1
-            ;;
-    esac
-}
-
-# Archive erstellen (Universal)
-function pack() {
-    if [ $# -lt 2 ]; then
-        echo "Usage: pack <output_archive> <input_file_or_folder>"
-        echo "Formats supported via extension: .tar.gz, .zip, .7z"
-        return 1
-    fi
-    
-    local output="$1"
-    shift
-    local input="$@"
-    
-    if [ ! -e "$input" ]; then
-        echo "❌ Error: Input '$input' does not exist"
-        return 1
-    fi
-    
-    if [ -e "$output" ]; then
-        echo "❌ Error: Output '$output' already exists!"
-        return 1
-    fi
-    
-    case "$output" in
-        *.tar.gz|*.tgz)
-            tar -czf "$output" "$input"
-            echo "✅ Created: $output"
-            ;;
-        *.zip)
-            zip -r "$output" "$input"
-            echo "✅ Created: $output"
-            ;;
-        *.7z)
-            if command -v 7z &> /dev/null; then
-                7z a -t7z "$output" "$input"
-                echo "✅ Created: $output"
-            else
-                echo "❌ 7z not installed"
-                return 1
-            fi
-            ;;
-        *)
-            echo "❌ Unknown output format. Supported: .tar.gz, .zip, .7z"
-            return 1
-            ;;
-    esac
-}
 
 # Komprimieren mit maximalem Level
 function pack_hardcore() {
@@ -286,63 +126,11 @@ function pack_hardcore() {
     echo "✅ Hardcore compressed: $output"
 }
 
-# Archiv Inhalt ansehen ohne Entpacken
-function archive_contents() {
-    if [ $# -ne 1 ]; then
-        echo "Usage: archive_contents <archive_file>"
-        return 1
-    fi
-    
-    case "$1" in
-        *.tar.gz|*.tgz) tar -tzf "$1" ;;
-        *.tar.bz2|*.tbz2) tar -tjf "$1" ;;
-        *.tar.xz|*.txz) tar -tJf "$1" ;;
-        *.zip) unzip -l "$1" ;;
-        *.7z) 7z l "$1" ;;
-        *) echo "Unknown format" ;;
-    esac
-}
-
 # ─────────────────────────────────────────────────────────────────────────────
 # SYSTEM MONITORING FUNCTIONS
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Schneller Systemstatus Overview
-function sysinfo() {
-    echo "=========================================="
-    echo "        🖥️ SYSTEM INFORMATION 🖥️"
-    echo "=========================================="
-    
-    echo -e "\n📅 Date & Uptime:"
-    date "+%Y-%m-%d %H:%M:%S"
-    uptime -p
-    
-    echo -e "\n💻 Hostname & Kernel:"
-    hostname
-    uname -r
-    
-    echo -e "\n👤 Logged Users:"
-    who | wc -l
-    who
-    
-    echo -e "\n📀 Disk Space (/):"
-    df -h / | tail -1 | awk '{print "Used:", $3 "/" $2 " (" $5 ")"}'
-    
-    echo -e "\n🧠 Memory Usage:"
-    free -h | grep Mem | awk '{print "Used:", $3 "/" $2 " (" int($3/$2*100) "%)"}'
-    
-    echo -e "\n🔥 Load Average:"
-    cat /proc/loadavg | awk '{print "1m: "$1", 5m: "$2", 15m: "$3}'
-    
-    echo -e "\n🔋 CPU Temperature (if available):"
-    if command -v sensors &> /dev/null; then
-        sensors | grep -E "Core|Package" | head -5
-    else
-        echo "   (install lm-sensors for temps)"
-    fi
-    
-    echo -e "\n=========================================="
-}
+
 
 # Memory hungry processes
 function mem_hogs() {
@@ -401,17 +189,6 @@ function myextip() {
     echo -n "  Via ipify.org: "; curl -s api.ipify.org 2>/dev/null || echo "Failed"
 }
 
-# Speedtest (requires speedtest-cli)
-function internet_speed() {
-    if command -v speedtest &> /dev/null; then
-        speedtest --simple
-    elif command -v speedtest-cli &> /dev/null; then
-        speedtest-cli --simple
-    else
-        echo "❌ Install with: pip install speedtest-cli or sudo apt install speedtest"
-    fi
-}
-
 # Wi-Fi connection info
 function wifi_info() {
     nmcli -g ACTIVE,SSID,SIGNAL device wifi | head -10
@@ -461,111 +238,6 @@ function checksum() {
     sha256sum "$1"
 }
 
-# Check if password was leaked (Have I Been Pwned concept)
-function check_password_leak() {
-    echo "⚠️ WARNING: Never enter real passwords in scripts!"
-    echo "Use online services instead: https://haveibeenpwned.com/passwords"
-}
-
-# Set restrictive umask temporarily
-function secure_umask() {
-    umask 077
-    echo "✅ Umask set to 077 (new files: owner only)"
-    unset UMASK_SET  # Reset after session
-}
-
-# Backup important configs quickly
-function backup_configs() {
-    local dest="${1:-./backup_$(date +%Y%m%d_%H%M%S)}"
-    
-    mkdir -p "$dest"
-    
-    echo "Creating config backups in: $dest"
-    
-    declare -a configs=(
-        ".bashrc" ".bash_aliases" ".bash_functions"
-        ".profile" ".vimrc" ".tmux.conf"
-    )
-    
-    for conf in "${configs[@]}"; do
-        [ -f "~/$conf" ] && cp -v "~/$conf" "$dest/" 2>/dev/null
-    done
-    
-    # Add custom locations
-    [ -d "/etc/nginx" ] && cp -rv "/etc/nginx" "$dest/etc_nginx" 2>/dev/null
-    [ -f "/etc/fstab" ] && cp -v "/etc/fstab" "$dest/" 2>/dev/null
-    
-    echo "✅ Backup complete: $dest"
-}
-
-# ─────────────────────────────────────────────────────────────────────────────
-# GIT HELPER FUNCTIONS
-# ─────────────────────────────────────────────────────────────────────────────
-
-# Git status quick overview
-function gs() {
-    git status --short
-}
-
-# Git commit with message
-function gc() {
-    git commit -am "$1"
-}
-
-# Git push to origin
-function gp() {
-    git push origin "$1"
-}
-
-# Git pull from origin
-function gul() {
-    git pull origin "$1"
-}
-
-# Clone repo and cd into it
-function clonetocd() {
-    if [ -z "$1" ]; then
-        echo "Usage: clonetocd <repository_url>"
-        return 1
-    fi
-    git clone "$1" && cd "$(basename "$1" .git)"
-}
-
-# Show git branches
-function gb() {
-    git branch -a
-}
-
-# Git stash pop latest
-function gstpop() {
-    git stash list | tail -1 | cut -d: -f1 | xargs git stash pop
-}
-
-# Git interactive rebase with HEAD
-function grebase() {
-    git rebase -i HEAD~"${1:-3}"
-}
-
-# ─────────────────────────────────────────────────────────────────────────────
-# DOCKER HELPER FUNCTIONS (IF INSTALLED)
-# ─────────────────────────────────────────────────────────────────────────────
-
-function docker_running() {
-    docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-}
-
-function docker_images() {
-    docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.Size}}"
-}
-
-function docker_stats_lite() {
-    docker stats --no-stream --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"
-}
-
-function docker_prune_all() {
-    read -p "⚠️ This will remove all stopped containers, unused networks and dangling images. Continue? (y/N) " confirm
-    [[ "$confirm" == "y" ]] && docker system prune -a --volumes
-}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CLEANUP & MAINTENANCE FUNCTIONS
@@ -617,21 +289,6 @@ function trash_delete() {
 # DEVELOPMENT HELPERS
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Python HTTP server quick start
-function pyserver() {
-    local port="${1:-8000}"
-    python3 -m http.server "$port"
-}
-
-# Node.js server quick start (http-server package)
-function node_server() {
-    npx http-server -p "${1:-8080}"
-}
-
-# PHP development server
-function phpserve() {
-    php -S localhost:"${1:-8000}"
-}
 
 # Watch directory for changes (requires entr or watchexec)
 function watch_changes() {
@@ -645,83 +302,12 @@ function watch_changes() {
     fi
 }
 
-# Virtual environment setup helper
-function create_venv() {
-    local name="${1:-venv}"
-    python3 -m venv "$name"
-    source "$name/bin/activate"
-    echo "✅ Virtual environment '$name' created and activated"
-}
 
-# Node modules cleanup
-function npm_clean() {
-    rm -rf node_modules package-lock.json
-    npm cache clean --force
-    npm install
-    echo "✅ npm project cleaned and rebuilt"
-}
-
-# Project template creator
-function new_python_project() {
-    local proj_name="$1"
-    if [ -z "$proj_name" ]; then
-        echo "Usage: new_python_project <project_name>"
-        return 1
-    fi
-    
-    mkdir -p "$proj_name"
-    cd "$proj_name"
-    git init
-    echo "# $proj_name" > README.md
-    echo "__version__: \"0.1.0\"" > version.py
-    echo "[project]" > pyproject.toml
-    cat <<EOF >> requirements.txt
-# Dependencies go here
-pytest>=7.0
-black>=23.0
-flake8>=6.0
-EOF
-    echo "✅ Python project '$proj_name' initialized"
-}
-
-# JavaScript project template
-function new_node_project() {
-    local proj_name="$1"
-    if [ -z "$proj_name" ]; then
-        echo "Usage: new_node_project <project_name>"
-        return 1
-    fi
-    
-    mkdir -p "$proj_name"
-    cd "$proj_name"
-    npm init -y
-    mkdir src tests
-    echo "// Main entry point" > src/index.js
-    echo "// Tests" > tests/test.spec.js
-    echo "✅ Node.js project '$proj_name' initialized"
-}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # FUN & PRODUCTIVITY FUNCTIONS
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Display ASCII art banner
-function welcome_banner() {
-    clear
-    figlet "$USER" 2>/dev/null || echo "Welcome, $USER!"
-    sysinfo
-}
-
-# Daily motivation
-function motivate() {
-    fortune 2>/dev/null || echo "\"Success is not final, failure is not fatal.\" - Winston Churchill"
-}
-
-# Quick weather (requires curl)
-function quick_weather() {
-    location="${1:-Berlin}"
-    curl -s "wttr.in/${location}?Q" 2>/dev/null || echo "Weather unavailable"
-}
 
 # Countdown timer (in seconds)
 function countdown() {
@@ -748,228 +334,3 @@ function pomodoro() {
     countdown 300
     echo "🔄 Ready for another round?"
 }
-
-# Random quote generator
-function quoteme() {
-    local quotes=(
-        "\"The best way to predict the future is to invent it.\" - Alan Kay"
-        "\"Talk is cheap. Show me the code.\" - Linus Torvalds"
-        "\"Premature optimization is the root of all evil.\" - Donald Knuth"
-        "\"There are only two kinds of languages: the ones people complain about and the ones nobody uses.\" - Bjarne Stroustrup"
-    )
-    echo "${quotes[RANDOM % ${#quotes[@]}]}"
-}
-
-# Screen recording stub (requires vdo/screenrecorder)
-function record_screen() {
-    echo "Screen recording requires tools like:"
-    echo "  - obs-studio"
-    echo "  - simplescreenrecorder"
-    echo "  - kazam"
-    echo "Run one of these:"
-    echo "  obs &"
-    echo "  simplescreenrecorder"
-    echo "  kazam"
-}
-
-# Clipboard helpers
-function clipboard_copy() {
-    if command -v xclip &> /dev/null; then
-        xclip -selection clipboard
-    elif command -v xsel &> /dev/null; then
-        xsel --clipboard
-    else
-        echo "Install xclip or xsel for clipboard support"
-        return 1
-    fi
-}
-
-function clipboard_paste() {
-    if command -v xclip &> /dev/null; then
-        xclip -selection clipboard -o
-    elif command -v xsel &> /dev/null; then
-        xsel --clipboard --output
-    else
-        echo "Install xclip or xsel for clipboard support"
-        return 1
-    fi
-}
-
-# Quick note append
-function notepad() {
-    local filename="${1:-~/notes.txt}"
-    echo "Appending to notes ($filename). Press Ctrl+D when done."
-    cat >> "$filename"
-    echo ""
-    echo "Saved note at: $(date)" >> "$filename"
-}
-
-# Quick todos list
-function todos() {
-    local todo_file="~/todos.list"
-    case "${1:-view}" in
-        add)
-            echo "- [ ] $2" >> "$todo_file"
-            echo "Added task: $2"
-            ;;
-        clear|done)
-            > "$todo_file"
-            echo "✓ Todos cleared"
-            ;;
-        *)
-            echo "=== TODO LIST ==="
-            [ -f "$todo_file" ] && cat "$todo_file" || echo "(No tasks yet)"
-            echo "================="
-            echo "Commands: todos add '<task>', todos clear, todos"
-            ;;
-    esac
-}
-
-# ─────────────────────────────────────────────────────────────────────────────
-# UTILITY FUNCTIONS
-# ─────────────────────────────────────────────────────────────────────────────
-
-# Color printing
-function colortext() {
-    local color="$1"
-    shift
-    case "$color" in
-        red|r) echo -e "\033[31m$*\033[0m" ;;
-        green|g) echo -e "\033[32m$*\033[0m" ;;
-        yellow|y) echo -e "\033[33m$*\033[0m" ;;
-        blue|b) echo -e "\033[34m$*\033[0m" ;;
-        magenta|m) echo -e "\033[35m$*\033[0m" ;;
-        cyan|c) echo -e "\033[36m$*\033[0m" ;;
-        white|w) echo -e "\033[37m$*\033[0m" ;;
-        *) echo "$*" ;;
-    esac
-}
-
-# Bold, underline, reset macros
-function bold() { echo -e "\033[1m$*\033[0m"; }
-function underline() { echo -e "\033[4m$*\033[0m"; }
-function success() { echo -e "\033[32m✅ SUCCESS: $*\033[0m"; }
-function warning() { echo -e "\033[33m⚠️ WARNING: $*\033[0m"; }
-function error() { echo -e "\033[31m❌ ERROR: $*\033[0m"; }
-
-# Progress spinner during long operations
-function spin() {
-    local pid=$!
-    local delay=0.1
-    local spinstr='|/-\'
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
-        local temp=${spinstr#?}
-        printf " [%c]  " "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b\b\b"
-    done
-    printf "    \b\b\b\b"
-}
-
-# Timestamp prefix for logging
-function log_entry() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
-}
-
-# Safe cd that prints destination
-function safe_cd() {
-    if [ -d "$1" ]; then
-        cd "$1" && echo "➡️ Now in: $(pwd)"
-    else
-        echo "❌ Directory doesn't exist: $1"
-        return 1
-    fi
-}
-
-# Count occurrences of something
-function counter() {
-    if [ $# -eq 0 ]; then
-        echo "Count lines in stdin"
-        wc -l
-    elif [ $# -eq 1 ]; then
-        echo "Lines in file: $1"
-        wc -l "$1"
-    else
-        echo "Args: $@"
-        eval "$*" | wc -l
-    fi
-}
-
-# Make script executable properly
-function make_exec() {
-    if [ -z "$1" ]; then
-        echo "Usage: make_exec <script_file>"
-        return 1
-    fi
-    chmod +x "$1"
-    echo "✅ Made executable: $1"
-}
-
-# Quick manual lookup (with fuzzy matching)
-function manlook() {
-    if [ -z "$1" ]; then
-        echo "Usage: manlook <command>"
-        return 1
-    fi
-    apropos "$1" | head -20
-}
-
-# Environment variables pretty print
-function dump_env() {
-    export | sort | nl
-}
-
-# Create symbolic link with confirmation
-function createsym() {
-    if [ $# -ne 2 ]; then
-        echo "Usage: createsym <target> <link_name>"
-        return 1
-    fi
-    ln -sf "$1" "$2"
-    echo "✅ Symlink created: $2 -> $1"
-}
-
-# Validate URL syntax
-function validurl() {
-    local url_regex='^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$'
-    [[ "$1" =~ $url_regex ]] && echo "✅ Valid URL" || echo "❌ Invalid URL"
-}
-
-# Convert units
-function convert_gb_mb() {
-    echo "$1 GB = $(( $1 * 1024 )) MB"
-}
-
-# Human readable byte sizes
-function bytes_to_hr() {
-    num=$1
-    if ((num >= 1073741824)); then
-        echo "$(awk "BEGIN {printf \"%.2f\", $num/1073741824}") GB"
-    elif ((num >= 1048576)); then
-        echo "$(awk "BEGIN {printf \"%.2f\", $num/1048576}") MB"
-    elif ((num >= 1024)); then
-        echo "$(awk "BEGIN {printf \"%.2f\", $num/1024}") KB"
-    else
-        echo "$num Bytes"
-    fi
-}
-
-# ─────────────────────────────────────────────────────────────────────────────
-# EOF OF FUNCTION LIBRARY
-# ─────────────────────────────────────────────────────────────────────────────
-
-colortext cyan "📚 ~/.bash_functions loaded successfully!"
-
-colortext cyan "📚 ~/.bash_functions loaded successfully!"
-
-# nautilius kontext-menü --> könnt functions ersetzen
-#cat > ~/.local/share/nautilus/scripts/echo-selection.sh <<'EOF'
-##!/usr/bin/env bash
-#echo "Auswahl:"
-#echo "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS"
-#EOF
-#chmod +x ~/.local/share/nautilus/scripts/echo-selection.sh
-#sudo apt update
-#sudo apt install nautilus-extension-gnome-terminal
-#nautilus -q
