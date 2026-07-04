@@ -1,7 +1,3 @@
-# Ignore local backup and trash folders entirely
-backup/
-trash/
-
 # Ignore personal shell configuration that should not be public
 .bashrc
 .bash_profile
