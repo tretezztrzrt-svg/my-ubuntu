@@ -76,5 +76,8 @@ alias why='echo "Weil du der Admin bist. Atme tief durch und prüfe die Logs."' 
 alias matrix='cmatrix -b' # Aktiviert den Matrix-Bildschirmschoner im Terminal # ubuntu-proofed
 alias rabbithole='cmatrix -b' # Matrix-Effekt im Terminal (erfordert cmatrix) # ubuntu-proofed
 
+alias pls='please [!!]' #to be proofed
+alias bitte='fuck' # sollte gehen
+
 # Schleifen Sammlung
 # while true; do clear; ls -la; sleep 1; done # macht es so lange bis unendlich
