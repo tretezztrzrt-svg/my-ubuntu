@@ -451,6 +451,3 @@ EOF
     
     return 0
 }
-
-# Exportiere die Funktion
-export -f create-project
