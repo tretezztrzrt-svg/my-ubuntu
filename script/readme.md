@@ -127,3 +127,6 @@ These live adjacent to the four above. Know when to reach for them.
 
 ## Final Pro-Tip: The "Script" Default
 When in doubt, **write a script**. Scripts are globally reusable, testable, debuggable, and work everywhere. Aliases and functions are convenience tools for your fingers; scripts are engineering tools for your system.
+
+---
+## info: dir `check-info` → scripts funny to run once...
