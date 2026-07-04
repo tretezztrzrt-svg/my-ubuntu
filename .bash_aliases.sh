@@ -12,7 +12,7 @@
   alias logs='cd /var/log/' # Wechselt in das Verzeichnis für variable Daten (Logs etc.)
   alias etc='cd /etc/' # Wechselt in das Systemkonfigurations-Verzeichnis
   
-  alias install-common='sudo apt install cmatrix micro less mc btop htop p7zip-full brasero make git meld'
+  alias install-common='sudo apt install cmatrix micro less mc btop htop p7zip-full brasero make git meld curl net-tools hwinfo gedit'
 # ---------------------------------------------------------
 # paar kurzepumpgun action --------------------------------
 alias c='clear' # Terminal leeren
