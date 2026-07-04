@@ -234,3 +234,74 @@ function backup() {
     echo
   } >> "$log_file" 2>&1
 }
+# --- trash -------------------------------------------------------------------
+# Verschiebt Dateien/Ordner in den Papierkorb unter $HOME/trash und unterscheidet zwischen
+#   - Ordnern: ~/trash/dir/<TIMESTAMP>_<TARGETNAME>
+#   - Dateien: ~/trash/file/<TIMESTAMP>_<TARGETNAME>
+# Logfile:
+#   - liegt unter ~/trash/
+#   - Name: <YYYY-MM-DD>_func_.log
+#
+# Nutzung:
+#   trash <pfad/zur/datei_oder_ordner>
+function trash() {
+  # erwartete Parameterzahl
+  # Ziel prüfen & sammeln
+  local target trash_dir log_file target_name timestamp date_day trash_name
+  trash_dir="$HOME/trash"
+
+  # Argument prüfen
+  if [[ $# -ne 1 ]]; then
+    echo "Fehler: Bitte gib eine Datei oder ein Verzeichnis an!" >&2
+    return 1
+  fi
+
+  target="$1"
+
+  # Existenz prüfen (Datei oder Ordner)
+  if [[ ! -e "$target" ]]; then
+    echo "Fehler: '$target' existiert nicht oder ist ungültig!" >&2
+    return 2
+  fi
+
+  # Zielordner anlegen (falls nicht vorhanden)
+  mkdir -p -- "$trash_dir" "$trash_dir/dir" "$trash_dir/file"
+
+  # Basis-Namen/Zeiten
+  target_name="$(basename -- "$target")"
+  timestamp="$(date +"%Y-%m-%d_%H-%M-%S")"
+  date_day="$(date +"%Y-%m-%d")"
+
+  # Trash-Name: Timestamp soll vor dem gelöschten Ziel stehen
+  trash_name="${timestamp}_${target_name}"
+
+  # Logfile: im Trash-Ordner, Kennung "_func_"
+  log_file="${trash_dir}/${date_day}_func_.log"
+
+  # Alles protokollieren (inkl. Ausgabe von Fehlern)
+  {
+    echo "=== Trash-Start: $(date) ==="
+    echo "Zielobjekt: $target"
+    echo "Trash-Name: $trash_name"
+
+    # Datei oder Verzeichnis: unterschiedlich verschieben
+    if [[ -d "$target" ]]; then
+      echo "Typ: Verzeichnis"
+
+      # Verzeichnis verschieben
+      mv -- "$target" "${trash_dir}/dir/${trash_name}"
+
+      echo "Erfolgreich als ${trash_name} in Trash verschoben."
+    else
+      echo "Typ: Datei"
+
+      # Datei verschieben
+      mv -- "$target" "${trash_dir}/file/${trash_name}"
+
+      echo "Erfolgreich als ${trash_name} in Trash verschoben."
+    fi
+
+    echo "=== Trash-Ende: $(date) ==="
+    echo
+  } >> "$log_file" 2>&1
+}
