@@ -1,21 +1,3 @@
-# ------- todo
-# Nutzung: search "suchbegriff"
-#function search() {
-#    if [ -z "$1" ]; then
-#        echo "Verwendung: search <suchbegriff>"
-#        return 1
-#    fi
-#}
-# nautilius kontext-menü --> könnt functions ersetzen
-# cat > ~/.local/share/nautilus/scripts/echo-selection.sh <<'EOF'
-# echo "Auswahl:"
-# echo "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS"
-# EOF
-# chmod +x ~/.local/share/nautilus/scripts/echo-selection.sh
-# sudo apt update
-# sudo apt install nautilus-extension-gnome-terminal
-# nautilus -q
-
 # --- Functions ----------------------------------------------------------------
 # Öffnet Ordner $1, zeigt Arbeitsverzeichnis (pwd) und listet Inhalt (ls -la).
 # Erwartet: 1 Argument = Ordnername/-pfad
@@ -304,4 +286,92 @@ function trash() {
     echo "=== Trash-Ende: $(date) ==="
     echo
   } >> "$log_file" 2>&1
+}
+
+# to be proofed
+
+
+
+
+function service() {
+    local action=$1
+    shift
+    case "$action" in
+        start|stop|restart|status|enable|disable)
+            sudo systemctl "$action" "$@"
+            ;;
+        *)
+            echo "Usage: service {start|stop|restart|status|enable|disable} <service>"
+            return 1
+            ;;
+    esac
+}
+
+function tarfix() {
+    if [ $# -lt 2 ]; then
+        echo "Usage: tarfix <archiv.tar.gz> <datei1> [datei2 ...]"
+        return 1
+    fi
+    tar -czvf "$1" "${@:2}"
+}
+
+function untar() {
+    if [ $# -ne 1 ]; then
+        echo "Usage: untar <archiv.tar.gz>"
+        return 1
+    fi
+    tar -xzvf "$1"
+}
+
+please() {
+    if [ $# -eq 0 ] || [ "$1" = "!!" ]; then
+        echo "oh honey..."
+		sudo $(fc -ln -1)
+    else
+        sudo "$@"
+    fi
+}
+
+fuck() {
+    if [ $# -eq 0 ]; then
+        # Kein Argument: wiederhole den letzten Befehl mit sudo
+        echo "oh oh..."
+        local lastcmd=$(fc -ln -1)
+        if [ -z "$lastcmd" ]; then
+            echo "Kein vorheriger Befehl in der Historie, honey" >&2
+            return 1
+        fi
+        eval "sudo $lastcmd"
+    else
+        echo "Kein vorheriger Befehl in der Historie, honey" >&2
+    fi
+}
+
+ordner() {
+    du -h "$@" | sort -h
+}
+
+sortiert() {
+    du -sh * 2>/dev/null | sort -h
+}
+
+bigfiles() {
+    du -ah "$@" 2>/dev/null | sort -rh | head -n 10
+}
+
+killforce() {
+    if [ $# -eq 0 ]; then
+        echo "Usage: killforce <PID1> [PID2 ...]"
+        return 1
+    fi
+    kill -9 "$@"
+}
+
+profile_me() {
+    if ! command -v history &>/dev/null; then
+        echo "Fehler: 'history' ist nicht verfügbar (nicht-interaktive Shell?)" >&2
+        return 1
+    fi
+    local lines=${1:-10}
+    history | awk '{print $2}' | sort | uniq -c | sort -rn | head -n "$lines"
 }
