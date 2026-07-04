@@ -79,5 +79,18 @@ alias rabbithole='cmatrix -b' # Matrix-Effekt im Terminal (erfordert cmatrix) # 
 alias pls='please [!!]' #to be proofed
 alias bitte='fuck' # sollte gehen
 
+alias hg="history | grep"
+alias ao-history-grep="history | grep"
+# profile-me fun!
+
+# Wichtige Shortcuts
+alias ao-help_me="echo 'man'"
+alias ao-info_docs="echo 'info'"
+alias ao-what_is="echo 'whatis'"
+alias ao-describe="echo 'apropos'"
+alias ao-tldr= 'echo "tldr.appinabrowsser"'
+
+# Uhrzeit & Datum
+alias ao-date_now="date '+%Y-%m-%d %H:%M:%S'"
 # Schleifen Sammlung
 # while true; do clear; ls -la; sleep 1; done # macht es so lange bis unendlich
