@@ -44,8 +44,8 @@ alias upgrade-full='sudo apt update && sudo apt full-upgrade -y' # Vollständige
 # taskmanager
 alias killforce='kill -9' # Beendet einen Prozess sofort und unnachgiebig (SIGKILL)
 alias exorzist='kill -9' # Sendet das Standard-Beendigungssignal an eine PID (SIGTERM) -> Hinweis: Nutzt SIGKILL (-9)
-alias psaux='ps aux' # Zeigt alle laufenden Prozesse im System an
-alias psax='ps aux' # Zeigt alle laufenden Prozesse im System an
+alias psaux='ps -aux' # Zeigt alle laufenden Prozesse im System an
+alias psax='ps -aux' # Zeigt alle laufenden Prozesse im System an
 # btop, btop, btop everything is btop!!!!!!
 alias top='btop'
 alias btop='btop'
