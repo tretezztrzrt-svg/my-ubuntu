@@ -1,3 +1,5 @@
+# https://tldr.inbrowser.app/
+# https://cheat.sh/
 # ------------------------------------------------------------------------------
 # ubuntu-iso ubuntu-isos alex-ubuntu ubuntu-alex
 # https://ftp.gwdg.de/pub/linux/debian/ubuntu/iso/
@@ -16,3 +18,6 @@
 # https://launchpad.net/veracrypt/trunk/1.26.29/+download/VeraCrypt%20Portable%201.26.29.exe
 # https://launchpad.net/veracrypt/trunk/1.26.29/+download/VeraCrypt_Setup_x64_1.26.29.msi
 # https://archive.org/download/vmware-workstation-pro-full-26h1-25388281.x86_64/VMware-Workstation-Full-26H1-25388281.exe
+
+# vmware quick stuff
+# https://www.linuxvmimages.com/images/ubuntu-2604

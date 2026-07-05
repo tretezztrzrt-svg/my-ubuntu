@@ -1,0 +1,43 @@
+# ================================================================
+echo "Klone Repository 'ubuntu-learning' ..."
+usdo apt install git
+git clone https://github.com/tretezztrzrt-svg/ubuntu-learning
+cd ubuntu-learning
+echo "Fertig."
+
+# ================================================================
+echo "https://launchpad.net/veracrypt/trunk/1.26.29/+download/veracrypt-1.26.29-Ubuntu-26.04-amd64.deb"
+wget "https://launchpad.net/veracrypt/trunk/1.26.29/+download/veracrypt-1.26.29-Ubuntu-26.04-amd64.deb"
+echo "https://archive.org/download/vmware-workstation-pro-full-26h1-25388281.x86_64/VMware-Workstation-Full-26H1-25388281.x86_64.bundle"
+wget "https://archive.org/download/vmware-workstation-pro-full-26h1-25388281.x86_64/VMware-Workstation-Full-26H1-25388281.x86_64.bundle"
+
+# ================================================================
+.bashrc -change
+HISTSIZE=10001
+HISTFILESIZE=20001
+
+# Alias definitions.
+# falls nicht einkommentiert
+#if [ -f ~/.bash_aliases ]; then
+#    . ~/.bash_aliases
+#fi
+#if [ -f ~/.bash_function ]; then
+#    . ~/.bash_function
+#fi
+# ================================================================
+
+sudo visudo
+echo "Defaults env_reset, timestamp_timeout=60"
+
+# ---------- Schritt 10: Aliase & Funktionen kopieren ----------
+.bash_aliases.sh
+.bash_functions.sh
+überschreiben
+
+dir trash, script, backup verschieben
+reboot
+# ================================================================
+install-common
+gsettings
+rdp (optional)
+fest-ip (optional)
