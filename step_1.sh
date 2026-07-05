@@ -11,6 +11,27 @@ set -euo pipefail
 # - Bash-History vergrößern
 # - Eigene Aliase/Funktionen kopieren
 # ================================================================
+# ---------- Schritt 1: Installationen ----------
+echo ""
+echo "[1/10] System-Update, Git, VeraCrypt & VMware installieren ..."
+sudo apt update -qq
+sudo apt install -y git
+mkdir -p downloads && cd downloads
+DEB_URL="https://launchpad.net/veracrypt/trunk/1.26.29/+download/veracrypt-1.26.29-Ubuntu-26.04-amd64.deb"
+VMWARE_URL="https://archive.org/download/vmware-workstation-pro-full-26h1-25388281.x86_64/VMware-Workstation-Full-26H1-25388281.x86_64.bundle"
+wget -q --show-progress "$DEB_URL"
+wget -q --show-progress "$VMWARE_URL"
+DEB_FILE="$(basename "$DEB_URL")"
+VMWARE_FILE="$(basename "$VMWARE_URL")"
+sudo apt-get install -y ./"$DEB_FILE"
+sudo apt-get -f install -y
+chmod +x "$VMWARE_FILE"
+sudo ./"$VMWARE_FILE"   # ggf. interaktiv – Lizenz akzeptieren
+cd ..
+rm -rf downloads
+sudo apt-get autoremove -y -qq && sudo apt-get clean -y -qq
+echo "   ✅ [1/10] Fertig."
+
 
 echo ""
 echo "[2/10] Klone Repository 'ubuntu-learning' ..."
