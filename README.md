@@ -35,6 +35,7 @@
 | `cockpit-install` | `sudo apt install cockpit` | **Try this:** Cockpit per Shortcut installieren |
 | **Cockpit** | Moderne, schlanke Weboberfläche – perfekt für den schnellen Überblick | `sudo apt install cockpit`<br>Zugang: `https://<server-ip>:9090` |
 | **Webmin** | Der Klassiker – extrem viele Einstellungsmöglichkeiten über eine GUI | `curl -o webmin-setup-repo.sh https://raw.githubusercontent.com/webmin/webmin/master/webmin-setup-repo.sh && sudo sh webmin-setup-repo.sh && sudo apt-get install webmin --install-recommends`<br>Zugang: `https://<server-ip>:10000` |
+
 ---
 
 ## 🛠️ Funktionen – Die echten Helfer im Alltag
@@ -66,14 +67,8 @@
 
 ---
 
-| quick, get me |
+## quicky ##
 
-# 1. Update package lists (so you get the latest Git version)
-sudo apt update
-# 2. Install Git (the '-y' automatically answers "yes" to the installation prompt)
-sudo apt install git -y
-# 3. Clone the repository from GitHub (this creates the folder "ubuntu-learning")
-git clone https://github.com/tretezztrzrt-svg/ubuntu-learning
-# 4. Change your current working directory into the freshly cloned folder
-cd ubuntu-learning
-echo "next ->bash-config and gsettings -> install-common für mein pack"
+sudo apt update && sudo apt install git -y && git clone https://github.com/tretezztrzrt-svg/ubuntu-learning && cd ubuntu-learning
+
+---
