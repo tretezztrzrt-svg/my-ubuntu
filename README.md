@@ -65,3 +65,15 @@
 | **Server per GUI verwalten** | `cockpit` oder `webmin` |
 
 ---
+
+| quick, get me |
+
+# 1. Update package lists (so you get the latest Git version)
+sudo apt update
+# 2. Install Git (the '-y' automatically answers "yes" to the installation prompt)
+sudo apt install git -y
+# 3. Clone the repository from GitHub (this creates the folder "ubuntu-learning")
+git clone https://github.com/tretezztrzrt-svg/ubuntu-learning
+# 4. Change your current working directory into the freshly cloned folder
+cd ubuntu-learning
+echo "next ->bash-config and gsettings -> install-common für mein pack"
