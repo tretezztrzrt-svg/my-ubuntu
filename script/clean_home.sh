@@ -10,19 +10,22 @@ for d in Music Videos Templates Pictures; do
   rm -rf -- "$d"
 done
 
-# 2) Alle Ordner im aktuellen Verzeichnis (ohne versteckte wie .ssh) in Kleinbuchstaben umbenennen
-for dir in */; do
-  # dir endet mit /
-  base="${dir%/}"
 
-  # versteckte Ordner auslassen (starten mit .)
+for dir in */; do
+  base="${dir%/}"                     # Ordner ohne abschließenden Schrägstrich
+
+  # Versteckte Ordner (beginnen mit .) überspringen
   [[ "$base" == .* ]] && continue
+
+  # Ausnahme für den Desktop-Ordner (Ubuntu/GNOME)
+  # hier muss für ubuntu leider eine ausnahme eingabut werden,
+  # wenn Desktop zu desktop umbennat wird, dann erscheint auf dem 
+  # desktop selbst der inhalt vom home verzeinis und das ist nicht gewollt
+  [[ "$base" == "Desktop" ]] && continue
 
   lower="$(printf '%s' "$base" | tr '[:upper:]' '[:lower:]')"
 
-  # nur umbenennen, wenn wirklich nötig
   if [[ "$base" != "$lower" ]]; then
-    # Ziel-Ordner kollidiert? -> abkürzen statt überschreiben
     if [[ -e "$lower" ]]; then
       echo "SKIP: '$base' -> '$lower' (Ziel existiert bereits)" >&2
       continue
