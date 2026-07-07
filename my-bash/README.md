@@ -66,7 +66,7 @@
 
 ---
 
-| quick, get me |
+
 
 # 1. Update package lists (so you get the latest Git version)
 sudo apt update
