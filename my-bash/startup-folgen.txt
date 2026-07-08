@@ -1,3 +1,20 @@
+#!/usr/bin/env bash
+# down vmware
+# down veracrypt
+# down git und repo
+
+# darkmode
+# nachtmodus
+# dock unten
+
+# bashrc, aliases, functions
+# timestamp_timeout auf 60 Minuten 
+
+# reboot
+# install-common
+# clean_home.sh
+# rdp
+# fest ip?
 # ================================================================ git clone
 
 echo "Klone Repository 'ubuntu-learning' ..."
