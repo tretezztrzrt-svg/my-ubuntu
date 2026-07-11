@@ -1,3 +1,46 @@
+## 📁 Ordnerstruktur und deren Inhalte
+
+Die meisten Ordner sind thematisch sortiert und enthalten Skripte oder Konfigurationsdateien für bestimmte Aufgabenbereiche.
+
+- **`backup/`**: Enthält vermutlich Skripte oder Konfigurationen für **Backup-Routinen**, z.B. um wichtige Ordner zu sichern oder zu komprimieren.
+
+- **`check-info/`**: Hier liegen Skripte, die **Systeminformationen** abrufen, wie z.B. Hardware-Daten (`hwinfo`), Netzwerkstatus (`net-tools`) oder Speicherbelegung (`df`, `free`). Passt zu deinen Aliases `diskinfo`, `ram` oder `platz`.
+
+- **`lazy-treasures/`**: Der Name deutet auf eine Sammlung von **"Schätzen für Faule"** hin. Das sind wahrscheinlich sehr spezifische, komplexe Befehle oder Skripte, die du oft brauchst, aber nicht jedes Mal neu tippen möchtest – der Kern deiner "Bash-Toolbox".
+
+- **`my-bash/`**: Der zentrale Ordner für deine **Bash-Konfiguration**. Hier liegt vermutlich deine Haupt-`.bashrc` oder andere Dateien, in denen all deine Aliases und Funktionen definiert sind (wie sie in der Tabelle in der `README.md` aufgelistet sind).
+
+- **`read-my-stuff/`**: Enthält wahrscheinlich Skripte, um **Logs oder Textdateien schnell zu durchsuchen oder anzuzeigen**, z.B. mit `grep`, `cat` oder `less`. Der Name ist eine direkte Anspielung auf deine Aliases `log` oder `logs`.
+
+- **`script/`**: Ein allgemeiner Ordner für **eigene, größere Shell-Skripte**, die über einfache Aliases hinausgehen. Hier landen komplexere Automatisierungen.
+
+- **`trash/`**: Ein Ordner für **temporäre Dateien oder Skripte**, die du testest oder die noch nicht fertig sind. Er dient als eine Art "Ablage" für Ideen.
+
+- **`treesize/`**: Hier geht es um **Speicherplatz-Analyse**. Enthält Skripte, die die Ordnerstruktur nach Größe durchsuchen (`du`, `ncdu`), ähnlich deinem Alias `platz`.
+
+---
+
+## 📈 Wohin die Reise geht (Trends & Ziele)
+
+Anhand der Dateien und deiner Notizen am Ende der `README.md` lassen sich einige Hauptziele und Richtungen erkennen:
+
+1. **Zentralisierung und Standardisierung**  
+   Du baust dir ein modulares, persönliches Toolkit, das du auf jedem Ubuntu-System schnell einsetzen kannst. Die Ordner sind thematisch sauber getrennt.
+
+2. **Maximale Effizienz im Terminal**  
+   Im Fokus steht, wiederkehrende Aufgaben mit kürzestmöglichen Befehlen (`alex`, `c`, `update`) oder mächtigen Tools (`btop`, `ncdu`, `micro`) zu erledigen.
+
+3. **GUI-Verwaltung für Server**  
+   Du testest und integrierst Web-GUIs wie **Cockpit** und **Webmin**, um Server auch über eine grafische Oberfläche verwalten zu können – besonders nützlich für komplexe Einstellungen.
+
+4. **Lokale KI und Entwicklung**  
+   Der letzte Punkt ("todo") zeigt dein Interesse an **lokalen KI-Modellen** (mit LM Studio) und **alternativen Code-Editoren** (OpenCode, Roo Code). Das Ziel ist, unabhängiger von Cloud-APIs zu werden und mehr Kontrolle über die Entwicklungsumgebung zu haben.
+
+
+
+
+
+
 # 🧰 Meine Bash-Toolbox – Vollständige Edition
 
 ## 📂 Aliases – Alle Schnellbefehle im Überblick
@@ -67,7 +110,12 @@
 
 
 
-todo
+---
+
+
+## todo
+
+
 o stupid copilot on github, dont care about, so
 
 
